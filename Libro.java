@@ -1,43 +1,48 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package proyecto.java;
 
 public class Libro extends Material {
-
-    private String editorial;
+    private String autor;
     private String isbn;
-    private int numeroPaginas;
+    private int numPaginas;
 
-    public Libro(String codigo, String titulo, int año, String editorial, String isbn, int numeroPaginas) {
-        super(codigo, titulo, año);
-        this.editorial = editorial;
+    public Libro(String id, String titulo, String autor, int numPaginas) {
+        super(id, titulo);
+        this.setTipo("Libro");
+        this.autor = autor;
+        this.numPaginas = numPaginas;
+        this.isbn = "N/A";
+    }
+
+    public Libro(String id, String titulo, int anioPublicacion, String editorial, String isbn, int numPaginas) {
+        super(id, titulo, "Libro", anioPublicacion, editorial, 1);
+        this.autor = "Sin especificar";
         this.isbn = isbn;
-        this.numeroPaginas = numeroPaginas;
+        this.numPaginas = numPaginas;
     }
 
-    public String getEditorial() {
-        return editorial;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public int getNumPaginas() {
-        return numeroPaginas;
+    public Libro(String id, String titulo, int anioPublicacion, String editorial, int cantidadDisponible, String autor, String isbn, int numPaginas) {
+        super(id, titulo, "Libro", anioPublicacion, editorial, cantidadDisponible);
+        this.autor = autor;
+        this.isbn = isbn;
+        this.numPaginas = numPaginas;
     }
 
     @Override
-    public void mostrarInfo() {
-        System.out.println("LIBRO");
-        System.out.println("  Codigo: " + getCodigo());
-        System.out.println("  Titulo: " + getTitulo());
-        System.out.println("  Anio: " + getAño());
-        System.out.println("  Editorial: " + editorial);
-        System.out.println("  ISBN: " + isbn);
-        System.out.println("  Paginas: " + numeroPaginas);
-        System.out.println("  Disponible: " + getDisponible());
+    public void mostrarDetalles() {
+        System.out.println("Libro [" + getId() + "]: " + getTitulo() + " | Autor: " + autor + " | ISBN: " + isbn);
     }
+
+    @Override
+    public String obtenerDetalleEspecifico() {
+        return "Autor: " + autor + " | ISBN: " + isbn + " | Págs: " + numPaginas;
+    }
+
+    public String getAutor() { return autor; }
+    public void setAutor(String autor) { this.autor = autor; }
+
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
+
+    public int getNumPaginas() { return numPaginas; }
+    public void setNumPaginas(int numPaginas) { this.numPaginas = numPaginas; }
 }
