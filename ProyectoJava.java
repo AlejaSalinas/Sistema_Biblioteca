@@ -1,24 +1,26 @@
 package proyecto.java;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class ProyectoJava {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        Biblioteca biblioteca = new Biblioteca();
+        PrestamoDAO prestamoDAO = new PrestamoDAO();
         int opcion = 0;
 
         do {
             System.out.println("========================================");
             System.out.println("   SISTEMA DE GESTION DE BIBLIOTECA");
             System.out.println("========================================");
-            System.out.println("1. Registrar material");
-            System.out.println("2. Registrar usuario");
-            System.out.println("3. Realizar prestamo");
-            System.out.println("4. Registrar devolucion");
-            System.out.println("5. Consultar materiales disponibles");
-            System.out.println("6. Consultar prestamos activos");
+            System.out.println("1. Registrar material (Pendiente modulo 1)");
+            System.out.println("2. Registrar usuario (Pendiente modulo 2)");
+            System.out.println("3. Realizar prestamo (MySQL)");
+            System.out.println("4. Registrar devolucion (MySQL)");
+            System.out.println("5. Consultar materiales disponibles (Pendiente modulo 1)");
+            System.out.println("6. Abrir interfaz de Prestamos, Devoluciones e Historial");
             System.out.println("7. Salir");
             System.out.println("========================================");
             System.out.print("Seleccione una opcion: ");
@@ -28,110 +30,48 @@ public class ProyectoJava {
 
             switch (opcion) {
                 case 1:
-                    System.out.println("--- REGISTRAR MATERIAL ---");
-                    System.out.print("Codigo: ");
-                    String codigo = sc.nextLine();
-                    System.out.print("Titulo: ");
-                    String titulo = sc.nextLine();
-                    System.out.print("Año: ");
-                    int año = sc.nextInt();
-                    sc.nextLine();
-                    System.out.print("Tipo (1=Libro, 2=Revista): ");
-                    int tipo = sc.nextInt();
-                    sc.nextLine();
-                    if (tipo == 1) {
-                        System.out.print("Editorial: ");
-                        String editorial = sc.nextLine();
-                        System.out.print("ISBN: ");
-                        String isbn = sc.nextLine();
-                        System.out.print("Numero de paginas: ");
-                        int paginas = sc.nextInt();
-                        sc.nextLine();
-                        Libro libro = new Libro(codigo, titulo, año, editorial, isbn, paginas);
-                        biblioteca.registrarMaterial(libro);
-                    } else if (tipo == 2) {
-                        System.out.print("Numero de edicion: ");
-                        int edicion = sc.nextInt();
-                        sc.nextLine();
-                        System.out.print("Mes: ");
-                        String mes = sc.nextLine();
-                        System.out.print("Periodicidad: ");
-                        String periodicidad = sc.nextLine();
-                        Revista revista = new Revista(codigo, titulo, año, edicion, mes, periodicidad);
-                        biblioteca.registrarMaterial(revista);
-                    } else {
-                        System.out.println("Tipo no valido.");
-                    }
-                    break;
-
                 case 2:
-                    System.out.println("--- REGISTRAR USUARIO ---");
-                    System.out.print("Carnet: ");
-                    String carnet = sc.nextLine();
-                    System.out.print("Nombre: ");
-                    String nombre = sc.nextLine();
-                    System.out.print("Carrera: ");
-                    String carrera = sc.nextLine();
-                    Usuario usuario = new Usuario(carnet, nombre, carrera);
-                    biblioteca.registrarUsuario(usuario);
+                case 5:
+                    System.out.println("Modulo en desarrollo por otro integrante.");
                     break;
 
                 case 3:
                     System.out.println("--- REALIZAR PRESTAMO ---");
-                    System.out.print("Titulo del material: ");
-                    String tituloPrestamo = sc.nextLine();
-                    Material materialEncontrado = null;
-                    for (int i = 0; i < biblioteca.getMateriales().size(); i++) {
-                        if (biblioteca.getMateriales().get(i).getTitulo().equals(tituloPrestamo)) {
-                            materialEncontrado = biblioteca.getMateriales().get(i);
-                        }
-                    }
-                    if (materialEncontrado != null) {
-                        System.out.print("Carnet del usuario: ");
-                        String carnetPrestamo = sc.nextLine();
-                        Usuario usuarioEncontrado = null;
-                        for (int i = 0; i < biblioteca.getUsuarios().size(); i++) {
-                            if (biblioteca.getUsuarios().get(i).getCarnet().equals(carnetPrestamo)) {
-                                usuarioEncontrado = biblioteca.getUsuarios().get(i);
-                            }
-                        }
-                        if (usuarioEncontrado != null) {
-                            System.out.print("Fecha de prestamo: ");
-                            String fecha = sc.nextLine();
-                            biblioteca.realizarPrestamo(materialEncontrado, usuarioEncontrado, fecha);
-                        } else {
-                            System.out.println("Usuario no encontrado.");
-                        }
-                    } else {
-                        System.out.println("Material no encontrado.");
+                    try {
+                        System.out.print("Codigo de usuario (ej. JUAPEREZ): ");
+                        String codUser = sc.nextLine().trim();
+                        System.out.print("Codigo de material (ej. LIB-001): ");
+                        String codMat = sc.nextLine().trim();
+                        System.out.print("Fecha de prestamo (AAAA-MM-DD): ");
+                        LocalDate fPrest = LocalDate.parse(sc.nextLine().trim());
+                        System.out.print("Fecha prevista de devolucion (AAAA-MM-DD): ");
+                        LocalDate fEnt = LocalDate.parse(sc.nextLine().trim());
+
+                        System.out.println(prestamoDAO.registrarPrestamo(codUser, codMat, fPrest, fEnt));
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Error: Formato de fecha invalido. Use AAAA-MM-DD.");
                     }
                     break;
 
                 case 4:
                     System.out.println("--- REGISTRAR DEVOLUCION ---");
-                    System.out.print("Titulo del material: ");
-                    String tituloDevolucion = sc.nextLine();
-                    Material materialDevolucion = null;
-                    for (int i = 0; i < biblioteca.getMateriales().size(); i++) {
-                        if (biblioteca.getMateriales().get(i).getTitulo().equals(tituloDevolucion)) {
-                            materialDevolucion = biblioteca.getMateriales().get(i);
-                        }
-                    }
-                    if (materialDevolucion != null) {
-                        System.out.print("Fecha de devolucion: ");
-                        String fechaDevolucion = sc.nextLine();
-                        biblioteca.registrarDevolucion(materialDevolucion, fechaDevolucion);
-                    } else {
-                        System.out.println("Material no encontrado.");
-                    }
-                    break;
+                    try {
+                        System.out.print("Codigo de prestamo (ej. PRES-001): ");
+                        String codPres = sc.nextLine().trim();
+                        System.out.print("Fecha efectiva de devolucion (AAAA-MM-DD): ");
+                        LocalDate fEfectiva = LocalDate.parse(sc.nextLine().trim());
 
-                case 5:
-                    biblioteca.consultarDisponibles();
+                        System.out.println(prestamoDAO.registrarDevolucion(codPres, fEfectiva));
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Error: Formato de fecha invalido. Use AAAA-MM-DD.");
+                    }
                     break;
 
                 case 6:
-                    biblioteca.consultarPrestamosActivos();
+                    System.out.println("Abriendo interfaz grafica...");
+                    java.awt.EventQueue.invokeLater(() -> {
+                        new FrmPrestamosDevoluciones().setVisible(true);
+                    });
                     break;
 
                 case 7:
